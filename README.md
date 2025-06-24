@@ -80,3 +80,57 @@ Use **CoolTerm** or any serial terminal to log the data as `.txt`, and import in
 
 ```cpp
 mySerial.begin(4800, SERIAL_7E2, 21, 20); // RX = GPIO21, TX = GPIO20
+```
+## ⚙️ Performance
+
+- **Targeted polling rate**: 5 ms (200 Hz)  
+- **Realistic effective data rate**: ~14.5 Hz  
+- **Serial format limitations**: 7E2 configuration + protocol overhead limits data throughput to approx. 40–50 values/sec  
+- **Button responsiveness issue**: Below 10 ms, the device’s physical buttons become unresponsive — likely due to high polling frequency  
+- **Final configuration**: 5 ms polling interval ensures high data rate **without disrupting** device usability
+
+---
+
+## 📦 Files Included
+
+- `src/`: Arduino code for ESP32-C3  
+- `hardware/`: STL + Fusion360 files for 3D printed enclosure  
+- `docs/`: Protocol documentation and optional wiring diagram  
+
+---
+
+## 🧪 To Do
+
+- [ ] Add live plotting via WebSerial / Python  
+- [ ] Implement command-line batch logger  
+- [ ] Add optional OLED display support for portable measurements  
+
+---
+
+## 📸 Preview
+
+> _(Add wiring diagram, case photo, and screenshot of serial output here if available)_
+
+---
+
+## 📎 Links
+
+- 🔗 **ESP32-C3 Super Mini** → [AliExpress](https://de.aliexpress.com/item/1005005967641936.html)  
+- 🔗 **M8 4-Pin Cable** → [Amazon](https://www.amazon.de/dp/B0CNXGKMMK)
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** – use it, modify it, share it. Contributions welcome!
+
+---
+
+## 🤝 Contributing
+
+Pull requests and ideas are welcome! Especially for:
+
+- 🔍 Better parsing and formatting  
+- 📊 Real-time plotting/dashboard tools  
+- 🧩 Support for other Mahr models or protocols
+
