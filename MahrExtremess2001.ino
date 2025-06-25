@@ -10,27 +10,29 @@
 //OFF\r --> herunterfahren
 //ABS\r --> Absolute
 
+#define NUM_VALUES 100
+
 //Webserver
 #include <WiFi.h> //ESP32
 #include <ESPForm.h>
 
 #include "html.h"
 
-
-
 //Mit CoolTerm lassen sich die Ausgaben der Serielen Schnittstelle auslesen
 HardwareSerial mySerial(1);
 bool dataRecived = false;
-float pufferData[80];
 float messStartTime = 0;
 
+//Variablen für Progress
+bool startstopbtn = false;
+int modi = 0;
 
-#define NUM_VALUES 40
+
 float lastValues[NUM_VALUES];
 int valueIndex = 0;
 bool bufferFilled = false;
-
 float stableThreshold = 0.001;  // z. B. ±0.05 mm Toleranz für stabile Werte
+int numberOfValues = 40;
 
 
 //Your WiFi SSID and Password
@@ -79,9 +81,13 @@ void loop() {
       ESPForm.setElementContent("text2", String(millis()));
     }
   }
-  
-  //ueberschwingverhalten();
-  //wiederholgenauigkeit();
+  if(startstopbtn){
+    if(modi == 0) {
+      wiederholgenauigkeit();
+    } else if (modi == 1) {
+      ueberschwingverhalten();
+    }
+  }
 }
 
 //starts the Wifi protocol
@@ -113,7 +119,11 @@ void setupESPForm(){
   ESPForm.addFileData(index_html, "index.html");
 
   //Add html element event listener, id "text1" for onchange event
-  ESPForm.addElementEventListener("text1", ESPFormClass::EVENT_ON_CHANGE);
+  
+  ESPForm.addElementEventListener("modeSelectComBox", ESPFormClass::EVENT_ON_CHANGE);
+  ESPForm.addElementEventListener("averageCount", ESPFormClass::EVENT_ON_CHANGE);
+  ESPForm.addElementEventListener("tolerance", ESPFormClass::EVENT_ON_CHANGE);
+  ESPForm.addElementEventListener("startStopBtn", ESPFormClass::EVENT_ON_CLICK);
   
   //Start ESPForm's Webserver
   ESPForm.begin(formElementEventCallback, serverTimeoutCallback, serverTimeout, true);
@@ -147,6 +157,23 @@ void formElementEventCallback(ESPFormClass::HTMLElementItem element)
   Serial.println("event: " + ESPForm.getElementEventString(element.event));
   Serial.println("***********************************");
   Serial.println();
+
+  if(element.id == "startStopBtn" && !startstopbtn){
+    startstopbtn = true;
+  }else if(element.id == "startStopBtn") {
+    startstopbtn = false;
+  }
+  if(element.id == "modeSelectComBox" && modi != 1){
+    modi = 1;
+  }else if(element.id == "modeSelectComBox") {
+    modi = 0;
+  }
+  if(element.id == "averageCount"){
+    numberOfValues = element.value.toInt();
+  }
+  if(element.id == "tolerance"){
+    stableThreshold = element.value.toFloat();
+  }
 }
 
 
@@ -178,7 +205,7 @@ void wiederholgenauigkeit() {
 
       // Neuen Wert in Puffer speichern
       lastValues[valueIndex] = sensorValue;
-      valueIndex = (valueIndex + 1) % NUM_VALUES;
+      valueIndex = (valueIndex + 1) % numberOfValues;
       if (valueIndex == 0) bufferFilled = true;
 
       // Wenn Puffer voll, Stabilität prüfen
@@ -208,7 +235,7 @@ void wiederholgenauigkeit() {
 // Hilfsfunktion zur Stabilitätsprüfung
 bool isStable() {
   float reference = lastValues[0];
-  for (int i = 1; i < NUM_VALUES; i++) {
+  for (int i = 1; i < numberOfValues; i++) {
     if (abs(lastValues[i] - reference) > stableThreshold) {
       return false;
     }
