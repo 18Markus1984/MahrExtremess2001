@@ -9,6 +9,15 @@
 //MIN\r --> Display Max/Min
 //OFF\r --> herunterfahren
 //ABS\r --> Absolute
+
+//Webserver
+#include <WiFi.h> //ESP32
+#include <ESPForm.h>
+
+#include "html.h"
+
+
+
 //Mit CoolTerm lassen sich die Ausgaben der Serielen Schnittstelle auslesen
 HardwareSerial mySerial(1);
 bool dataRecived = false;
@@ -23,16 +32,123 @@ bool bufferFilled = false;
 
 float stableThreshold = 0.001;  // z. B. ±0.05 mm Toleranz für stabile Werte
 
-void setup() {
+
+//Your WiFi SSID and Password
+unsigned long prevMillis = 0;
+unsigned long serverTimeout = 2 * 60 * 1000;
+
+//The AP
+String apSSID = "MahrExtramess2001";
+String apPSW = "12345678";
+
+//wifi and webserver realted functions
+bool startWiFi();                                                         //starts the Wifi protocol
+void setupESPForm();                                                      //Initialised all the EventListener for the comminication between Esp and HTML
+void formElementEventCallback(ESPFormClass::HTMLElementItem element);     //function that gets called if any of the EventListener get triggered. Used to get the different button presses and value changes
+void serverTimeoutCallback();   
+
+void setup()
+{
   Serial.begin(115200);
+
+  WiFi.softAPdisconnect(true);
+  WiFi.disconnect(true);
+  WiFi.persistent(false);
+
+  if (!startWiFi()) {
+    setupESPForm();
+    Serial.println("MAIN:  Start server");
+    ESPForm.startServer();
+  }
+
+  Serial.println("Initialising Serial Connection....");
   mySerial.begin(4800, SERIAL_7E2, 21, 20);  // UART setup RX/TX
   Serial.println("ESP32 UART MahrConnect Extremess 2001");
 }
 
+
 void loop() {
-  ueberschwingverhalten();
+  //If a client existed
+  if (ESPForm.getClientCount() > 0)
+  {
+
+    if (millis() - prevMillis > 1000)
+    {
+      prevMillis = millis();
+      //The event listener for text2 is not set because we don't want to listen to its value changes
+      ESPForm.setElementContent("text2", String(millis()));
+    }
+  }
+  
+  //ueberschwingverhalten();
   //wiederholgenauigkeit();
 }
+
+//starts the Wifi protocol
+bool startWiFi(){
+  //WiFi data is ready then start connction
+  WiFi.mode(WIFI_AP);
+  Serial.print("MAIN:  Connecting to Wi-Fi..");
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println();
+    Serial.print("MAIN:  Connected with IP: ");
+    Serial.println(WiFi.localIP());
+    Serial.println();
+  }
+  else {
+    Serial.println();
+    Serial.println("MAIN:  WiFi connection failed!");
+    return false;
+  }
+  return true;
+}
+
+//Initialised all the EventListener for the comminication between Esp and HTML
+void setupESPForm(){
+  Serial.println("MAIN:  Setup ESPForm");
+  ESPForm.setAP(apSSID.c_str(), apPSW.c_str());
+  //Prepare html contents (in html.h) for the web page rendering (only once)
+  //Flash's uint8_t array, file name, size of array, gzip compression
+  ESPForm.addFileData(index_html, "index.html");
+
+  //Add html element event listener, id "text1" for onchange event
+  ESPForm.addElementEventListener("text1", ESPFormClass::EVENT_ON_CHANGE);
+  
+  //Start ESPForm's Webserver
+  ESPForm.begin(formElementEventCallback, serverTimeoutCallback, serverTimeout, true);
+
+  Serial.print("Connected with IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.println();
+  Serial.println("=================================================");
+  Serial.println("Use web browser and navigate to " + WiFi.localIP().toString());
+  Serial.println("=================================================");
+  Serial.println();
+}
+
+
+void serverTimeoutCallback()
+{
+  //If server timeout (no client connected within specific time)
+  Serial.println("***********************************");
+  Serial.println("Server Timeout");
+  Serial.println("***********************************");
+  Serial.println();
+}
+
+void formElementEventCallback(ESPFormClass::HTMLElementItem element)
+{
+  Serial.println();
+  Serial.println("***********************************");
+  Serial.println("id: " + element.id);
+  Serial.println("value: " + element.value);
+  Serial.println("type: " + element.type);
+  Serial.println("event: " + ESPForm.getElementEventString(element.event));
+  Serial.println("***********************************");
+  Serial.println();
+}
+
 
 void wiederholgenauigkeit() {
   // Anfrage senden
