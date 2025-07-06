@@ -4,19 +4,19 @@ A low-cost ESP32-based interface to communicate with the proprietary **Mahr Extr
 
 ---
 
-## 🔧 What It Does
+## What It Does
 
 This project uses a cheap [ESP32-C3 Super Mini](https://de.aliexpress.com/item/1005005967641936.html) and a standard [M8 4-pin cable](https://www.amazon.de/dp/B0CNXGKMMK) to create a custom serial interface for the Mahr Extramess 2001, achieving an effective sampling rate of **~14.5 Hz** instead of the **1 Hz limit** imposed by the official software.
 
 ---
 
-## 💡 Why?
+## Why?
 
 The original Mahr cable costs **€111** – mostly due to an integrated FTDI controller. The official software only allows **1 measurement per second**, which is impractical for most real-world applications. We reverse-engineered the serial protocol and built our own logger to extract, parse, and store measurement data efficiently and affordably.
 
 ---
 
-## 🧰 Hardware
+## Hardware
 
 - **[ESP32-C3 Super Mini](https://de.aliexpress.com/item/1005005967641936.html)**  
   A compact and affordable microcontroller supporting UART + USB.
@@ -32,7 +32,7 @@ The original Mahr cable costs **€111** – mostly due to an integrated FTDI co
 
 ---
 
-## 📡 Protocol Reverse Engineering
+## Protocol Reverse Engineering
 
 We sniffed the communication between the official MahrConnect software and the Extramess 2001 device. The serial configuration is:
 
@@ -60,7 +60,7 @@ We sniffed the communication between the official MahrConnect software and the E
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
 The ESP32-C3 continuously polls the device every **5 ms** and:
 
@@ -69,19 +69,19 @@ The ESP32-C3 continuously polls the device every **5 ms** and:
 3. Parses the numeric measurement value (in mm)
 4. Outputs the value with a timestamp in **CSV** format via USB
 
-> 📋 Example Output (CSV-style over USB):  
+> Example Output (CSV-style over USB):  
 > `2,531;4,879`
 
 Use **CoolTerm** or any serial terminal to log the data as `.txt`, and import into Excel or other tools for analysis.
 
 ---
 
-## 🔩 Serial Setup
+## Serial Setup
 
 ```cpp
 mySerial.begin(4800, SERIAL_7E2, 21, 20); // RX = GPIO21, TX = GPIO20
 ```
-## ⚙️ Performance
+## Performance
 
 - **Targeted polling rate**: 5 ms (200 Hz)  
 - **Realistic effective data rate**: ~14.5 Hz  
@@ -91,7 +91,7 @@ mySerial.begin(4800, SERIAL_7E2, 21, 20); // RX = GPIO21, TX = GPIO20
 
 ---
 
-## 📦 Files Included
+## Files Included
 
 - `src/`: Arduino code for ESP32-C3  
 - `hardware/`: STL + Fusion360 files for 3D printed enclosure  
@@ -99,7 +99,7 @@ mySerial.begin(4800, SERIAL_7E2, 21, 20); // RX = GPIO21, TX = GPIO20
 
 ---
 
-## 🧪 To Do
+## To Do
 
 - [ ] Add live plotting via WebSerial / Python  
 - [ ] Implement command-line batch logger  
@@ -107,30 +107,30 @@ mySerial.begin(4800, SERIAL_7E2, 21, 20); // RX = GPIO21, TX = GPIO20
 
 ---
 
-## 📸 Preview
+## Preview
 
 > _(Add wiring diagram, case photo, and screenshot of serial output here if available)_
 
 ---
 
-## 📎 Links
+## Links
 
 - 🔗 **ESP32-C3 Super Mini** → [AliExpress](https://de.aliexpress.com/item/1005005967641936.html)  
 - 🔗 **M8 4-Pin Cable** → [Amazon](https://www.amazon.de/dp/B0CNXGKMMK)
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the **MIT License** – use it, modify it, share it. Contributions welcome!
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Pull requests and ideas are welcome! Especially for:
 
-- 🔍 Better parsing and formatting  
-- 📊 Real-time plotting/dashboard tools  
-- 🧩 Support for other Mahr models or protocols
+- Better parsing and formatting  
+- Real-time plotting/dashboard tools  
+- Support for other Mahr models or protocols
 
