@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="900" height="420" rx="12" fill="#ffffff"/>
+
+  <!-- PC -->
+  <rect x="30" y="65" width="200" height="120" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="130" y="97" text-anchor="middle" font-size="17" font-weight="600" fill="#0f172a">PC / Laptop</text>
+  <text x="130" y="125" text-anchor="middle" font-size="13" fill="#334155">CoolTerm / serial terminal</text>
+  <text x="130" y="145" text-anchor="middle" font-size="13" fill="#334155">115200 baud</text>
+  <text x="130" y="165" text-anchor="middle" font-size="13" fill="#334155">CSV log (time;value)</text>
+
+  <!-- ESP32 -->
+  <rect x="340" y="40" width="220" height="170" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+  <text x="450" y="72" text-anchor="middle" font-size="17" font-weight="600" fill="#0c4a6e">ESP32-C3 Super Mini</text>
+  <text x="450" y="92" text-anchor="middle" font-size="12" fill="#0369a1">MahrExtremess2001.ino</text>
+  <line x1="360" y1="104" x2="540" y2="104" stroke="#7dd3fc"/>
+  <text x="365" y="128" font-size="13" fill="#0f172a" font-family="Consolas, Menlo, monospace">GPIO21  RX  ← gauge</text>
+  <text x="365" y="150" font-size="13" fill="#0f172a" font-family="Consolas, Menlo, monospace">GPIO20  TX  → gauge</text>
+  <text x="365" y="172" font-size="13" fill="#0f172a" font-family="Consolas, Menlo, monospace">GND</text>
+  <text x="365" y="196" font-size="13" fill="#0f172a" font-family="Consolas, Menlo, monospace">USB-C   CDC serial</text>
+
+  <!-- Mahr -->
+  <rect x="670" y="65" width="200" height="120" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="770" y="97" text-anchor="middle" font-size="17" font-weight="600" fill="#78350f">Mahr Extramess 2001</text>
+  <text x="770" y="125" text-anchor="middle" font-size="13" fill="#78350f">UART 4800 baud, 7E2</text>
+  <text x="770" y="145" text-anchor="middle" font-size="13" fill="#78350f">"?\r" → "2.531mm"</text>
+  <text x="770" y="165" text-anchor="middle" font-size="13" fill="#78350f">~14.5 values/s</text>
+
+  <!-- Browser -->
+  <rect x="340" y="300" width="220" height="95" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="450" y="330" text-anchor="middle" font-size="17" font-weight="600" fill="#0f172a">Browser (phone / PC)</text>
+  <text x="450" y="355" text-anchor="middle" font-size="13" fill="#334155">mode · start/stop · N · tolerance</text>
+  <text x="450" y="377" text-anchor="middle" font-size="13" fill="#334155" font-family="Consolas, Menlo, monospace">http://192.168.4.1</text>
+
+  <!-- PC <-> ESP -->
+  <line x1="232" y1="125" x2="338" y2="125" stroke="#475569" stroke-width="2" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <text x="285" y="115" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">USB-C</text>
+
+  <!-- ESP <-> Mahr -->
+  <line x1="562" y1="125" x2="668" y2="125" stroke="#475569" stroke-width="2" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <text x="615" y="115" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">M8 4-pin</text>
+  <text x="615" y="145" text-anchor="middle" font-size="11" fill="#64748b">RX · TX · GND</text>
+
+  <!-- ESP <-> Browser -->
+  <line x1="450" y1="212" x2="450" y2="298" stroke="#475569" stroke-width="2" stroke-dasharray="6 5" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <text x="462" y="250" font-size="13" font-weight="600" fill="#334155">Wi-Fi AP</text>
+  <text x="462" y="268" font-size="12" fill="#64748b" font-family="Consolas, Menlo, monospace">MahrExtramess2001</text>
+</svg>
